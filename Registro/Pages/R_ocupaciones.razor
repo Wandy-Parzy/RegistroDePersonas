@@ -1,4 +1,7 @@
 @page "/R_ocupaciones"
+@page "/R_ocupacion/{OcupacionId:int}"
+
+
 @inject OcupacionesBLL OcupacionesBLL
 @inject NotificationService NotificationService
 
@@ -7,88 +10,73 @@
     <ValidationSummary />
     <div class="card">
         <div class="card-header">
-            <h3>Registro de ocupaciones</h3>
+            <h3>R_ocupaciones</h3>
         </div>
         <div class="card-body">
 
-            @*OcupacionId*@
-            <div class="form-r ow align-items-center">
-                <div class="col">
-                    <div class="form-group">
-                        <label>OcupacionId</label>
-                        <div class="input-group">
-                            <InputNumber @bind-Value="ocupacion.OcupacionId" class="form-control col-4" />
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            @*Descripcion*@
             <div class="form-group">
                 <label>Descripcion</label>
                 <InputText @bind-Value="ocupacion.Descripcion" class="form-control" />
                 <ValidationMessage For="@(() => ocupacion.Descripcion)" />
             </div>
 
-            @*Salario*@
             <div class="form-group">
                 <label>Salario</label>
                 <InputNumber @bind-Value="ocupacion.Salario" class="form-control" />
-                <ValidationMessage For="@(() => ocupacion.Salario)" />
+                <ValidationMessage For="@(() => ocupacion.Salario)" /> 
             </div>
-            
-     
-
         </div>
         <div class="card-footer">
             <div class="form-group text-center" display: inline-block>
                 <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
                 <button type="submit" class="btn btn-lg btn-success">Guardar</button>
-                <button type="submit" class="btn btn-lg btn-success">Editar</button>
                 <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
-            </div>
+            </div>    
         </div>
     </div>
 </EditForm>
 
-@code {
+ @code {
 
     [Parameter]
     public int OcupacionId { get; set; }
-    public Ocupaciones ocupacion { get; set; } = new Ocupaciones();
-    public string Filtro { get; set; } = "";
-    public string Criterio { get; set; } = "";
+    public Ocupaciones ocupacion { get; set; }= new Ocupaciones();
 
-    public List<Ocupaciones> lista { get; set; } = new List<Ocupaciones>();
+     [Inject]
+    private OcupacionesBLL ocupacionesBLL { get; set; }
+
+    public String mensaje { get; set; } = "";
 
     protected override void OnInitialized()
     {
-        if (OcupacionId > 0)
-        {
-            //si recibimos una {OcupacionId:int} por parametro asignarla
-            // y luego buscarla para que se vea en pantalla
-            this.ocupacion.OcupacionId = OcupacionId;
-            this.Buscar();
-        }
+        base.OnInitialized();
+      
     }
 
-    public void Nuevo()
+    private void Nuevo()
     {
         ocupacion = new Ocupaciones();
     }
 
-    bool Validar()
+    private void Buscar()
     {
-        return ocupacion.Descripcion.Contains(".");
+        if (ocupacion.OcupacionId > 0)
+        {
+              var encontrado = ocupacionesBLL.Buscar(ocupacion.OcupacionId);
+            Nuevo();
+            if (encontrado != null)
+                this.ocupacion = encontrado;
+            else
+            {
+                // toast.ShowWarning($"No se ha encontrado la tarea con el id ingresado");
+            }  
+
+        }
     }
 
     public void Guardar()
     {
-
-        bool guardado = OcupacionesBLL.Guardar(ocupacion);
+        var guardado = ocupacionesBLL.Guardar(ocupacion);
 
         if (guardado)
         {
@@ -105,19 +93,10 @@
         {
             // toast.ShowWarning("La tarea no se guardo");
         }
-    }
-    private void Buscar()
-    {
-        if (ocupacion.OcupacionId > 0)
-        {
-            var encontrado = OcupacionesBLL.Buscar(ocupacion.OcupacionId);
 
-            if (encontrado != null)
-                this.ocupacion = encontrado;
-        }
     }
 
-    public void Eliminar()
+     public void Eliminar()
     {
         bool elimino;
 
@@ -126,21 +105,14 @@
         if (elimino)
         {
             Nuevo();
+            //toast.ShowSuccess("Eliminado correctamente");
         }
+        // else
+        // toast.ShowError("No fue posible eliminar");
     }
-
-    public void Editar()
-    {
-    
-        var editar = OcupacionesBLL.Editar(ocupacion);
-        
-
-    }
-
-      void ShowNotification(NotificationMessage message)
+     void ShowNotification(NotificationMessage message)
     {
         NotificationService.Notify(message);
 
     }
-
 }

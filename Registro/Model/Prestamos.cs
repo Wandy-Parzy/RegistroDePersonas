@@ -10,8 +10,10 @@ namespace Registro.Model
 
           public DateTime Fecha { get; set; } = DateTime.Now;
 
+          //[Required(ErrorMessage = "El numero de telefono es requerido")]
           public DateTime Vence { get; set; }
 
+        //  [Required(ErrorMessage = "El numero de telefono es requerido")]
           public double Monto { get; set; }
 
           public string? Concepto { get; set; }
@@ -19,6 +21,7 @@ namespace Registro.Model
           public double Balance { get; set; }
   
 
+          //[Range(1,int.MaxValue,ErrorMessage ="El selecionar una ocupacion")]
 
            public int PersonaID { get; set; }
 

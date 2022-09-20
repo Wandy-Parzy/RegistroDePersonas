@@ -14,29 +14,29 @@ namespace Registro.BLL
                _contextos = contexto;
           }
 
-          public bool Existe1(int PersonaId)
+          public bool Existe(int PersonaId)
           {
                return _contextos.Persona.Any(o => o.PersonaId == PersonaId);
           }
 
-          private bool Insertar1(Persona persona)
+          private bool Insertar(Persona persona)
           {
                _contextos.Persona.Add(persona);
                return _contextos.SaveChanges() > 0;
           }
 
-          private bool Modificar1(Persona persona)
+          private bool Modificar(Persona persona)
           {
                _contextos.Entry(persona).State = EntityState.Modified;
                return _contextos.SaveChanges() > 0;
           }
 
-          public bool Guardar1(Persona persona)
+          public bool Guardar(Persona persona)
           {
-               if (!Existe1(persona.PersonaId))
-                    return this.Insertar1(persona);
+               if (!Existe(persona.PersonaId))
+                    return this.Insertar(persona);
                else
-                    return this.Modificar1(persona);
+                    return this.Modificar(persona);
           }
 
           public bool Eliminar1(Persona persona)
@@ -56,10 +56,10 @@ namespace Registro.BLL
 
           public bool Editar(Persona persona)
           {
-               if (!Existe1(persona.PersonaId))
-                    return this.Insertar1(persona);
+               if (!Existe(persona.PersonaId))
+                    return this.Insertar(persona);
                else
-                    return this.Modificar1(persona);
+                    return this.Modificar(persona);
           }
           public List<Persona> GetList(Expression<Func<Persona, bool>> Criterio)
           {

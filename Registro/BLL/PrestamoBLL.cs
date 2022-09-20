@@ -14,38 +14,38 @@ namespace Registro.BLL
                __contexto = contexto;
           }
 
-          public bool Existe2(int PrestamosId)
+          public bool Existe(int PrestamosId)
           {
                return __contexto.Prestamos.Any(o => o.PrestamoId == PrestamosId);
           }
 
-          private bool Insertar2(Prestamos prestamos)
+          private bool Insertar(Prestamos prestamos)
           {
                __contexto.Prestamos.Add(prestamos);
                return __contexto.SaveChanges() > 0;
           }
 
-          private bool Modificar2(Prestamos prestamos)
+          private bool Modificar(Prestamos prestamos)
           {
                __contexto.Entry(prestamos).State = EntityState.Modified;
                return __contexto.SaveChanges() > 0;
           }
 
-          public bool Guardar2(Prestamos prestamos)
+          public bool Guardar(Prestamos prestamos)
           {
-               if (!Existe2(prestamos.PrestamoId))
-                    return this.Insertar2(prestamos);
+               if (!Existe(prestamos.PrestamoId))
+                    return this.Insertar(prestamos);
                else
-                    return this.Modificar2(prestamos);
+                    return this.Modificar(prestamos);
           }
 
-          public bool Eliminar2(Prestamos prestamos)
+          public bool Eliminar(Prestamos prestamos)
           {
                __contexto.Entry(prestamos).State = EntityState.Deleted;
                return __contexto.SaveChanges() > 0;
           }
 
-          public Prestamos? Buscar2(int prestamoId)
+          public Prestamos? Buscar(int prestamoId)
           {
                return __contexto.Prestamos
                        .Where(o => o.PrestamoId == prestamoId)
@@ -56,10 +56,10 @@ namespace Registro.BLL
 
           public bool Editar(Prestamos prestamos)
           {
-               if (!Existe2(prestamos.PrestamoId))
-                    return this.Insertar2(prestamos);
+               if (!Existe(prestamos.PrestamoId))
+                    return this.Insertar(prestamos);
                else
-                    return this.Modificar2(prestamos);
+                    return this.Modificar(prestamos);
           }
           public List<Prestamos> GetList(Expression<Func<Prestamos, bool>> Criterio)
           {
